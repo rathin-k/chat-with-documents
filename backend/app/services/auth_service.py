@@ -26,10 +26,10 @@ def create_user(user):
 
     return str(result.inserted_id)
 
-def login_user(user):
+def login_user(email: str, password: str):
     existing_user = users_collection.find_one(
         {
-            "email": user.email
+            "email": email
         }
     )
 
@@ -37,7 +37,7 @@ def login_user(user):
         return None
 
     if not verify_password(
-        user.password,
+        password,
         existing_user["password"]
     ):
         return None
