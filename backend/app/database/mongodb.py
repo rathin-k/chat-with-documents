@@ -5,3 +5,5 @@ client = MongoClient(settings.MONGODB_URI)
 
 db = client["chat_with_documents"]
 
+users_collection = db["users"]
+documents_collection = db["documents"]
