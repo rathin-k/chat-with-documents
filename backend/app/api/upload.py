@@ -4,6 +4,8 @@ from app.utils.dependencies import get_current_user
 
 from app.services.upload_service import save_file
 
+from app.services.pdf_service import extract_text
+
 router = APIRouter(
     prefix="/upload",
     tags=["Upload"]
@@ -19,9 +21,14 @@ def upload_document(
        current_user["sub"]
     )
 
+    text = extract_text(
+      saved_document["filepath"]
+    )  
+
     return {
-      "message": "File uploaded successfully",
+      "message": "File uploaded and processed successfully",
       "document_id": saved_document["document_id"],
       "filename": file.filename,
-      "user": current_user["email"]
+      "user": current_user["email"],
+      "text": text
     }
