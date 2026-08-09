@@ -6,6 +6,8 @@ from app.services.upload_service import save_file
 
 from app.services.pdf_service import extract_text
 
+from app.services.chunking_service import chunk_text
+
 router = APIRouter(
     prefix="/upload",
     tags=["Upload"]
@@ -25,10 +27,12 @@ def upload_document(
       saved_document["filepath"]
     )  
 
+    chunks = chunk_text(text)
+    
     return {
       "message": "File uploaded and processed successfully",
       "document_id": saved_document["document_id"],
       "filename": file.filename,
       "user": current_user["email"],
-      "text": text
+      "chunk_count": len(chunks)
     }
