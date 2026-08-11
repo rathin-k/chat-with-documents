@@ -1,19 +1,29 @@
 # Python
+
 __pycache__/
 *.py[cod]
 *.pyo
 
 # Virtual Environment
+
 venv/
 backend/venv/
 
 # Environment Variables
+
 .env
 backend/.env
 
 # VS Code
+
 .vscode/
 
 # OS files
+
 .DS_Store
 Thumbs.db
+
+# Uploaded files and local databases
+
+uploads/
+chroma_db/
