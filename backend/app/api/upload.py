@@ -8,6 +8,10 @@ from app.services.pdf_service import extract_text
 
 from app.services.chunking_service import chunk_text
 
+from app.services.embedding_service import generate_embeddings
+
+from app.services.vector_service import store_chunks
+
 router = APIRouter(
     prefix="/upload",
     tags=["Upload"]
@@ -18,6 +22,7 @@ def upload_document(
     file: UploadFile = File(...),
     current_user=Depends(get_current_user)
 ):
+    
     saved_document = save_file(
        file,
        current_user["sub"]
@@ -28,6 +33,15 @@ def upload_document(
     )  
 
     chunks = chunk_text(text)
+
+    embeddings = generate_embeddings(chunks)
+
+    store_chunks(
+     chunks,
+     embeddings,
+     saved_document["document_id"],
+     file.filename
+    )
     
     return {
       "message": "File uploaded and processed successfully",
