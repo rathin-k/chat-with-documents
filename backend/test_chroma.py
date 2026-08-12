@@ -5,6 +5,7 @@ from app.services.vector_service import store_chunks
 
 
 document_id = "test-document-001"
+user_id = "test-user-001"
 
 filename = "Assignment No. 1 CA.pdf"
 
@@ -20,7 +21,8 @@ store_chunks(
     chunks,
     embeddings,
     document_id,
-    filename
+    filename,
+    user_id
 )
 
 print("Stored", len(chunks), "chunks in ChromaDB")

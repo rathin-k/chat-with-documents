@@ -22,6 +22,8 @@ def upload_document(
     file: UploadFile = File(...),
     current_user=Depends(get_current_user)
 ):
+
+    user_id = current_user["sub"]
     
     saved_document = save_file(
        file,
@@ -40,7 +42,8 @@ def upload_document(
      chunks,
      embeddings,
      saved_document["document_id"],
-     file.filename
+     file.filename,
+     user_id
     )
     
     return {
