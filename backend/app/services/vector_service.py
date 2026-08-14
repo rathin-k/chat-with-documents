@@ -7,23 +7,60 @@ client = chromadb.PersistentClient(
 )
 
 collection = client.get_or_create_collection(
-    name="documents"
+    name="documents",
+    metadata={
+        "hnsw:space": "cosine"
+    }
 )
 
 def search_chunks(
     query_embedding,
     user_id,
-    n_results=3
+    n_results=5,
+    similarity_threshold=0.30
 ):
     results = collection.query(
         query_embeddings=[query_embedding.tolist()],
         n_results=n_results,
         where={
             "user_id": user_id
-        }
+        },
+        include=["documents", "metadatas", "distances"]
     )
 
-    return results
+    filtered_documents = []
+    filtered_metadatas = []
+    filtered_distances = []
+
+    for i, distance in enumerate(results["distances"][0]):
+
+        similarity = 1 - distance
+
+        print(
+           f"Result {i}: "
+           f"chunk_index={results['metadatas'][0][i].get('chunk_index')} "
+           f"distance={distance:.4f}, "
+           f"similarity={similarity:.4f}"
+        )
+
+        if similarity >= similarity_threshold:
+            filtered_documents.append(
+                results["documents"][0][i]
+            )
+
+            filtered_metadatas.append(
+                results["metadatas"][0][i]
+            )
+
+            filtered_distances.append(
+                similarity
+            )
+
+    return {
+        "documents": [filtered_documents],
+        "metadatas": [filtered_metadatas],
+        "distances": [filtered_distances]
+    }
 
 def store_chunks(
     chunks,

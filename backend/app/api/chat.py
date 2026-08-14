@@ -25,9 +25,17 @@ def chat(
     results = search_chunks(
       query_embedding,
       current_user["sub"],
-      n_results=3
+      n_results=10,
+      similarity_threshold=0.30
     )
 
+    if not results["documents"][0]:
+      return {
+          "question": request.question,
+          "answer": "I could not find the answer in the uploaded documents.",
+          "sources": []
+       }
+    
     sources = []
 
     for i, document in enumerate(results["documents"][0]):
