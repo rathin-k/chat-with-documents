@@ -17,7 +17,7 @@ def search_chunks(
     query_embedding,
     user_id,
     n_results=5,
-    similarity_threshold=0.30
+    similarity_threshold=0.20
 ):
     results = collection.query(
         query_embeddings=[query_embedding.tolist()],
