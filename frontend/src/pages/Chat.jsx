@@ -1,9 +1,11 @@
+import Sidebar from "../components/Sidebar"
+import ChatWindow from "../components/ChatWindow"
+
 function Chat() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Chat with Documents
-      </h1>
+    <div className="h-screen flex">
+      <Sidebar />
+      <ChatWindow />
     </div>
   )
 }
