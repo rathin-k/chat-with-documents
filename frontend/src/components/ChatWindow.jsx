@@ -134,29 +134,28 @@ function ChatWindow() {
 
                 {message.sources &&
                   message.sources.length > 0 && (
+                   <div className="mt-4 pt-3 border-t border-gray-200">
+                    <p className="text-xs font-semibold text-gray-500 mb-2">
+                      Sources
+                   </p>
 
-                    <div className="mt-4 pt-3 border-t border-gray-200">
-
-                      <p className="text-xs font-semibold text-gray-500 mb-2">
-                        Sources
-                      </p>
-
-                      {message.sources.map(
-                        (source, sourceIndex) => (
-
-                          <div
-                            key={sourceIndex}
-                            className="text-xs text-gray-500 mb-2"
-                          >
-                            📄 {source.metadata.filename}
-                          </div>
-
-                        )
-                      )}
-
+                   {[
+                    ...new Map(
+                     message.sources.map((source) => [
+                       source.metadata.document_id,
+                       source
+                     ])
+                    ).values()
+                  ].map((source, sourceIndex) => (
+                    <div
+                      key={sourceIndex}
+                      className="text-xs text-gray-500 mb-2"
+                    >
+                     📄 {source.metadata.filename}
                     </div>
-
-                  )}
+                  ))}
+              </div>
+             )}
 
               </div>
 

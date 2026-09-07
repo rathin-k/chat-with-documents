@@ -91,3 +91,17 @@ def store_chunks(
       embeddings=embeddings.tolist(),
       metadatas=metadatas
     )
+
+def delete_document_chunks(
+    document_id,
+    user_id
+):
+
+    collection.delete(
+        where={
+            "$and": [
+                {"document_id": document_id},
+                {"user_id": user_id}
+            ]
+        }
+    )

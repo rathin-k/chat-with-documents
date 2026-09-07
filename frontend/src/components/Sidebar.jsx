@@ -76,6 +76,33 @@ function Sidebar() {
       e.target.value = ""
     }
   }
+  
+  const handleDelete = async (documentId) => {
+  try {
+    setError("")
+
+    await api.delete(
+      `/documents/${documentId}`
+    )
+
+    fetchDocuments()
+
+  } catch (error) {
+    console.error(
+      "Delete failed:",
+      error
+    )
+
+    if (error.response) {
+      setError(
+        error.response.data.detail ||
+        "Failed to delete document"
+      )
+    } else {
+      setError("Cannot connect to server")
+    }
+  }
+}
 
   return (
     <aside className="w-72 h-screen bg-white border-r border-gray-200 flex flex-col">
@@ -121,19 +148,26 @@ function Sidebar() {
       {/* Document list */}
 
       <div className="flex-1 overflow-y-auto p-4">
-
+       
         {documents.map((document) => (
-          <div
+         <div
            key={document.document_id}
-           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
+           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
           >
-            <span>📄</span>
+           <span>📄</span>
 
-            <span className="text-sm text-gray-700 truncate">
+           <span className="text-sm text-gray-700 truncate flex-1">
               {document.filename}
            </span>
-      </div>
-   ))}
+
+         <button
+           onClick={() => handleDelete(document.document_id)}
+           className="text-red-500 hover:text-red-700 text-sm"
+          >
+           🗑
+         </button>
+        </div>
+       ))}
 
       </div>
 
