@@ -1,13 +1,43 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import api from "../api/axios"
 
-function ChatWindow() {
+function ChatWindow({ conversationId,onConversationCreated}) {
   const [question, setQuestion] = useState("")
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const [conversationId, setConversationId] = useState(null)
+  useEffect(() => {
+
+    if (!conversationId) {
+      setMessages([])
+      return
+    }
+
+    const fetchMessages = async () => {
+
+      try {
+
+       const response = await api.get(
+        `/chat/conversations/${conversationId}/messages`
+       )
+
+       setMessages(response.data)
+
+      } catch (error) {
+
+      console.error(
+        "Failed to fetch conversation messages:",
+        error
+      )
+
+      setError("Failed to load conversation")
+     }
+    }
+
+    fetchMessages()
+
+  }, [conversationId])
 
   const handleSend = async (e) => {
     e.preventDefault()
@@ -43,9 +73,10 @@ function ChatWindow() {
 
       const data = response.data
 
-      // Save conversation ID returned by backend
       if (!conversationId) {
-        setConversationId(data.conversation_id)
+        onConversationCreated(
+         data.conversation_id
+        )
       }
 
       // Add assistant response

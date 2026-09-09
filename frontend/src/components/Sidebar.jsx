@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import api from "../api/axios"
 
-function Sidebar() {
+function Sidebar({ onSelectConversation,onNewChat,refreshKey }) {
   const fileInputRef = useRef(null)
 
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
   const [documents, setDocuments] = useState([])
+  const [conversations, setConversations] = useState([])
 
   const fetchDocuments = async () => {
     try {
@@ -24,9 +25,26 @@ function Sidebar() {
     }
   }
 
+  const fetchConversations = async () => {
+   try {
+     const response = await api.get(
+       "/chat/conversations"
+     )
+
+     setConversations(response.data)
+
+    } catch (error) {
+      console.error(
+       "Failed to fetch conversations:",
+      error
+    )
+   }
+  }
+
   useEffect(() => {
-    fetchDocuments()
-  }, [])
+   fetchDocuments()
+   fetchConversations()
+  }, [refreshKey])
 
   const handleUploadClick = () => {
     fileInputRef.current.click()
@@ -148,28 +166,66 @@ function Sidebar() {
       {/* Document list */}
 
       <div className="flex-1 overflow-y-auto p-4">
-       
-        {documents.map((document) => (
-         <div
-           key={document.document_id}
-           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
-          >
-           <span>📄</span>
 
-           <span className="text-sm text-gray-700 truncate flex-1">
-              {document.filename}
-           </span>
+        {/* Documents */}
 
-         <button
-           onClick={() => handleDelete(document.document_id)}
-           className="text-red-500 hover:text-red-700 text-sm"
-          >
-           🗑
-         </button>
-        </div>
-       ))}
+         {documents.map((document) => (
+           <div
+             key={document.document_id}
+             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+            >
+             <span>📄</span>
 
+             <span className="text-sm text-gray-700 truncate flex-1">
+               {document.filename}
+             </span>
+
+             <button
+               onClick={() => handleDelete(document.document_id)}
+               className="text-red-500 hover:text-red-700 text-sm"
+             >
+               🗑
+             </button>
+           </div>
+          ))}
+
+
+  {/* Conversations */}
+
+  <div className="mt-6">
+
+    <h3 className="text-xs font-semibold text-gray-500 uppercase mb-2">
+      Conversations
+    </h3>
+    
+    <button
+      onClick={onNewChat}
+      className="text-sm text-blue-600 hover:text-blue-800"
+    >
+      + New Chat
+    </button>
+
+    {conversations.map((conversation) => (
+      <div
+        key={conversation.conversation_id}
+        onClick={() =>
+          onSelectConversation(
+            conversation.conversation_id
+          )
+        }
+        className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
+      >
+        <span>💬</span>
+
+        <span className="text-sm text-gray-700 truncate">
+          {conversation.title}
+        </span>
       </div>
+    ))}
+
+  </div>
+
+</div>
 
     </aside>
   )

@@ -22,6 +22,89 @@ router = APIRouter(
     tags=["Chat"]
 )
 
+@router.get("/conversations")
+def get_conversations(
+    current_user=Depends(get_current_user)
+):
+
+    user_id = current_user["sub"]
+
+    conversations = conversations_collection.find(
+        {
+            "user_id": user_id
+        },
+        {
+            "_id": 0,
+            "conversation_id": 1,
+            "created_at": 1
+        }
+    ).sort("created_at", -1)
+
+    result = []
+
+    for conversation in conversations:
+
+        first_message = messages_collection.find_one(
+            {
+                "conversation_id": conversation["conversation_id"],
+                "user_id": user_id,
+                "role": "user"
+            },
+            {
+                "_id": 0,
+                "content": 1
+            },
+            sort=[("created_at", 1)]
+        )
+
+        title = "New Conversation"
+
+        if first_message:
+            title = first_message["content"]
+
+            if len(title) > 40:
+                title = title[:40] + "..."
+
+        result.append({
+            "conversation_id": conversation["conversation_id"],
+            "title": title,
+            "created_at": conversation["created_at"]
+        })
+
+    return result
+
+@router.get("/conversations/{conversation_id}/messages")
+def get_conversation_messages(
+    conversation_id: str,
+    current_user=Depends(get_current_user)
+):
+
+    user_id = current_user["sub"]
+
+    conversation = conversations_collection.find_one({
+        "conversation_id": conversation_id,
+        "user_id": user_id
+    })
+
+    if not conversation:
+        return {
+            "error": "Conversation not found"
+        }
+
+    messages = messages_collection.find(
+        {
+            "conversation_id": conversation_id,
+            "user_id": user_id
+        },
+        {
+            "_id": 0,
+            "role": 1,
+            "content": 1,
+            "created_at": 1
+        }
+    ).sort("created_at", 1)
+
+    return list(messages)
 
 @router.post("/")
 def chat(
