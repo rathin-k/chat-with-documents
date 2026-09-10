@@ -100,6 +100,7 @@ def get_conversation_messages(
             "_id": 0,
             "role": 1,
             "content": 1,
+            "sources": 1,
             "created_at": 1
         }
     ).sort("created_at", 1)
@@ -215,6 +216,7 @@ def chat(
             "user_id": user_id,
             "role": "assistant",
             "content": answer,
+            "sources": [],
             "created_at": datetime.now(timezone.utc)
         })
 
@@ -278,6 +280,7 @@ def chat(
         "user_id": user_id,
         "role": "assistant",
         "content": answer,
+        "sources": sources,
         "created_at": datetime.now(timezone.utc)
     })
 

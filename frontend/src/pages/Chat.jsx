@@ -29,6 +29,7 @@ function Chat() {
         onSelectConversation={setSelectedConversationId}
         onNewChat={handleNewChat}
         refreshKey={conversationRefreshKey}
+        selectedConversationId={selectedConversationId}
       />
 
       <ChatWindow

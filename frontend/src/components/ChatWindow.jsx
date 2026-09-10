@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import api from "../api/axios"
 
 function ChatWindow({ conversationId,onConversationCreated}) {
@@ -21,6 +23,8 @@ function ChatWindow({ conversationId,onConversationCreated}) {
        const response = await api.get(
         `/chat/conversations/${conversationId}/messages`
        )
+        
+       console.log("LOADED MESSAGES:", response.data)
 
        setMessages(response.data)
 
@@ -72,6 +76,8 @@ function ChatWindow({ conversationId,onConversationCreated}) {
       )
 
       const data = response.data
+
+      console.log("CHAT RESPONSE:", data)
 
       if (!conversationId) {
         onConversationCreated(
@@ -151,15 +157,22 @@ function ChatWindow({ conversationId,onConversationCreated}) {
               <div
                 className={
                   message.role === "user"
-                    ? "max-w-xl bg-blue-600 text-white rounded-xl px-4 py-3"
-                    : "max-w-xl bg-white text-gray-800 rounded-xl px-4 py-3 border border-gray-200"
+                    ? "max-w-2xl bg-blue-600 text-white rounded-2xl px-5 py-3 shadow-sm"
+                    : "max-w-2xl bg-white text-gray-800 rounded-2xl px-5 py-3 border border-gray-200 shadow-sm"
                 }
               >
 
-                <p className="whitespace-pre-wrap">
-                  {message.content}
-                </p>
-
+                {message.role === "assistant" ? (
+                  <div className="prose prose-sm max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                )}
 
                 {/* Sources */}
 
@@ -180,9 +193,15 @@ function ChatWindow({ conversationId,onConversationCreated}) {
                   ].map((source, sourceIndex) => (
                     <div
                       key={sourceIndex}
-                      className="text-xs text-gray-500 mb-2"
+                      className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 mb-2"
                     >
-                     📄 {source.metadata.filename}
+                      <span className="text-sm">
+                        📄
+                      </span>
+
+                      <span className="text-xs text-gray-600 truncate">
+                        {source.metadata.filename}
+                      </span>
                     </div>
                   ))}
               </div>

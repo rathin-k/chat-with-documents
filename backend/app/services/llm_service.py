@@ -50,6 +50,16 @@ Important rules:
    information, respond exactly:
    "I could not find the answer in the uploaded documents."
 
+Formatting rules:
+- Use Markdown for formatting.
+- Use **bold** for important terms when useful.
+- Use Markdown headings when appropriate.
+- Use Markdown bullet points or numbered lists when appropriate.
+- Use Markdown tables when a comparison is clearer as a table.
+- Do NOT use HTML tags such as <br>, <p>, <div>, <strong>, etc.
+- Do not include raw HTML in your answer.
+- Keep the answer clear and easy to read.
+
 Previous conversation:
 {history_text}
 
