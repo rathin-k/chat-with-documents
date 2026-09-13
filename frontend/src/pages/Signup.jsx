@@ -31,11 +31,20 @@ function Signup() {
 
     } catch (error) {
       console.error(error)
-
+ 
       if (error.response) {
-        setError(
-          error.response.data.detail || "Signup failed"
-        )
+
+        const detail = error.response.data.detail
+
+        if (Array.isArray(detail)) {
+          setError(
+            detail[0].msg.charAt(0).toUpperCase() +
+            detail[0].msg.slice(1)
+          )
+        } else {
+          setError(detail || "Signup failed")
+        }
+
       } else {
         setError("Cannot connect to server")
       }

@@ -75,6 +75,8 @@ function Sidebar({ onSelectConversation,onNewChat,refreshKey,selectedConversatio
         response.data
       )
 
+      await fetchDocuments()
+
     } catch (error) {
       console.error(error)
 

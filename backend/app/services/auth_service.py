@@ -52,4 +52,4 @@ def login_user(email: str, password: str):
     return {
         "access_token": access_token,
         "token_type": "bearer"
-    }
+    }   
