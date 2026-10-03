@@ -1,4 +1,9 @@
-from fastapi import APIRouter, UploadFile, File, Depends
+import os
+from bson import ObjectId
+
+from app.database.mongodb import documents_collection
+
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 
 from app.utils.dependencies import get_current_user
 
@@ -33,6 +38,20 @@ def upload_document(
     text = extract_text(
       saved_document["filepath"]
     )  
+
+    if not text.strip():
+
+      if os.path.exists(saved_document["filepath"]):
+        os.remove(saved_document["filepath"])
+
+      documents_collection.delete_one({
+        "_id": ObjectId(saved_document["document_id"])
+      })
+
+      raise HTTPException(
+        status_code=400,
+        detail="Could not extract text from this PDF. The PDF may be scanned or image-based."
+      )
 
     chunks = chunk_text(text)
 

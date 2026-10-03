@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import api from "../api/axios"
 
 function ChatWindow({ conversationId,onConversationCreated}) {
@@ -115,6 +118,18 @@ function ChatWindow({ conversationId,onConversationCreated}) {
       setLoading(false)
     }
   }
+  
+  const normalizeMath = (text) => {
+  if (!text) return text;
+
+  // Convert \[ ... \] to $$ ... $$
+  text = text.replace(/\\\[(.*?)\\\]/gs, "$$$1$$");
+
+  // Convert \( ... \) to $ ... $
+  text = text.replace(/\\\((.*?)\\\)/gs, "$$$1$");
+
+  return text;
+ };
 
   return (
     <main className="flex-1 h-screen flex flex-col bg-gray-50">
@@ -164,8 +179,11 @@ function ChatWindow({ conversationId,onConversationCreated}) {
 
                 {message.role === "assistant" ? (
                   <div className="prose prose-sm max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {message.content}
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                    >
+                      {normalizeMath(message.content)}
                     </ReactMarkdown>
                   </div>
                 ) : (

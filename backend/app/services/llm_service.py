@@ -56,6 +56,11 @@ Formatting rules:
 - Use Markdown headings when appropriate.
 - Use Markdown bullet points or numbered lists when appropriate.
 - Use Markdown tables when a comparison is clearer as a table.
+- Use LaTeX for mathematical expressions.
+- For inline math, ALWAYS use $...$.
+- For display/block math, ALWAYS use $$...$$.
+- NEVER use \( ... \), \[ ... \], [ ... ], or other delimiters for math.
+- Preserve mathematical notation accurately from the document context.
 - Do NOT use HTML tags such as <br>, <p>, <div>, <strong>, etc.
 - Do not include raw HTML in your answer.
 - Keep the answer clear and easy to read.
